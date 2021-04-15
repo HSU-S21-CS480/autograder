@@ -132,25 +132,6 @@ class AccessControlList {
    }
 
    /**
-    * Resolves with true if the user is an admin and can impersonate a user
-    * @param {Object} user The current user.
-    * @param {Number} user_id The current user's id number
-    * @returns {Promise} Resolves with true if the user is an admin, rejects false otherwise
-    */
-   adminImpersonatesUser(user, user_id) {
-      user_id = Number(user_id);
-      return new Promise((resolve, reject) => {
-         this.db.isAdmin(user.id)
-            .then(result => {
-               resolve(result);
-            }) 
-            .catch(() => {
-               reject(false);
-            });
-      });
-   }
-
-   /**
     * Resolves with true if the user owns the given file.
     * @param {Object} user 
     * @param {Number} file_id The file's ID number (integer). 

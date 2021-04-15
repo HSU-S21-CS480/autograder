@@ -196,3 +196,25 @@ validateUser = function(user, db) {
       })
    });
 }
+
+/**
+    * Check if the admin is in a database and can impersonate a user
+    * @param {Object} user  JSON object of the user.
+    * @param {Object} req HTTP request object.
+    * @param {Object} res HTTP response object.
+    * @param {Object} db Database connection.
+    * @returns {Promise} JSON response with the successfuly logged-in user's 
+    * information, or an error 
+    */
+adminImpersonatesUser = function(user, db, req, res) {
+      isAdmin(user.id) //checks if user is admin
+         .then(db.User.authenticate(req.body.email, req.body.password)) //authenticates admin as user
+         .then(result => { //logs in new user
+            delete result.password;
+            req.session.user = result;
+            res.json({ response: result });
+         }) 
+         .catch(err => {
+            res.json({ response: err });
+         });
+}
