@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {updateUser} from '../../actions/index';
-import {Redirect} from 'react-router-dom';
-
+import {selectUser} from '../../actions/index';
 
 const mapStateToProps = state => {
     return { current_user: state.current_user, models: state.models };
@@ -60,32 +58,27 @@ class UserView extends Component {
          });
    }
 
+   //Test Render HTML
    render() {
-    const user_name = this.state.user_name;      const password = this.state.password;
-    if(this.props.current_user.id !== undefined && this.props.current_user.id > 0)
-    {
-       return(<Redirect to="/login" />);
-    }
-      // generate appropriate page based on whether a user is logged in-- 
-      // show login button if not already logged in, or show the user's 
-      // course/assignment page once logged in 
-      if(this.state.valid_login === true) 
-      {
-         if(this.state.has_courses === true) 
-         {
-            // user has a course, so redirect to assignment page
-            return(<Redirect to="/" />);
-         }
-         else
-         {
-            // user not enrolled in any courses-- let them choose one first 
-            return(<Redirect to="/user" />);
-         }
-      }
-      else
-      {
-         return(<a href= {this.state.redirect_path} className = "btn btn-primary"> Login with Github </a>);
-      }
+      return (
+         <div>
+         
+         <nav className="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+            <Link to="/" className="navbar-brand">Assisted Grader</Link>
+            <button
+               className="navbar-toggler"
+               type="button"
+               data-toggle="collapse"
+               data-target="#navbarNav"
+               aria-controls="navbarSupportedContent"
+               aria-expanded="false"
+               aria-label="Toggle navigation"
+            >
+               <span className="navbar-toggler-icon"></span>
+            </button>
+         </nav>
+      </div> 
+      );
    }
 }
   
