@@ -1,9 +1,9 @@
-import User from './User'
+import Admin from './Index'
 
 const routes = [
    {
-      path: "/user",
-      component: User,
+      path: "/admin",
+      component: Admin,
       strict_match: true
    }
 ];

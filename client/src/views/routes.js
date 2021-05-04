@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { routes as AccountRoutes } from './Account/routes';
 import { routes as CourseRoutes } from './Course/routes';
 import {routes as AssignmentRoutes } from './Assignment/routes';
-import {routes as HomeRoutes } from './Home/routes'
+import {routes as HomeRoutes } from './Home/routes';
+import {routes as AdminRoutes } from './Admin/routes';
 
-const routes = [].concat(AccountRoutes, CourseRoutes, AssignmentRoutes, HomeRoutes);
+const routes = [].concat(AccountRoutes, CourseRoutes, AssignmentRoutes, HomeRoutes, AdminRoutes);
 
 class RouteWithSubRoutes extends Component {
 
