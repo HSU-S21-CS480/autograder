@@ -8,6 +8,8 @@ const mapStateToProps = state => {
    return { current_user: state.current_user, models: state.models };
 };
 
+let create = false;
+
 class AssignmentsListView extends Component {
 
    constructor(props) {
@@ -28,14 +30,51 @@ class AssignmentsListView extends Component {
       this.getCourseRole = this.getCourseRole.bind(this); 
       this.lockAssignment = this.lockAssignment.bind(this);
       this.viewAssignment = this.viewAssignment.bind(this);
+      this.assignmentButtonClick = this.assignmentButtonClick.bind(this);
    }
 
+
+   // Add the new assignment to the database
+   async addAssignmentAsync(assignment, parent) {
+      const user_id = parent.props.current_user.id;
+      await parent.props.models.assignment.addAssignmentAsync(assignment,user_id);
+      parent.getAssignmentsForCourse(user_id);
+      create = false;
+   }
+   
    componentDidMount() {
       this.getCourses(this.props.current_user)
       .then(() => this.getCourseRole())
       .then(() => this.getAssignmentsForCourse());
    }
 
+   componentWillReceiveProps(new_props) {
+      this.getCourses(new_props.current_user.id);
+   }
+
+   assignmentButtonClick(evt) {
+      const button_id = evt.target.dataset.id;
+      if(this.state.course_assignments[button_id] === undefined) {
+         // add request
+         this.props.models.assignment.addUser(button_id, this.props.current_user.id)
+         .then(() => {
+            let course_assignments = { ...this.state.course_assignments};
+            course_assignments[button_id] = { id: button_id };
+            this.setState({course_assignments: course_assignments});
+         })
+         .catch((err) => { })
+      }
+      else {
+         // remove request
+         this.props.models.assignment.removeUser(button_id, this.props.current_user.id)
+         .then(() => {
+            let course_assignments = { ... this.state.course_assignments};
+            delete course_assignments[button_id];
+            this.setState({ course_assignments: course_assignments });
+         })
+         .catch ((err) => { });
+      }
+   }
    // sets state to the list of all courses that user is enrolled or teaching in 
    getCourses() {
       let self = this; 
@@ -116,6 +155,8 @@ class AssignmentsListView extends Component {
       const assignment_headers = ['name', 'is_locked'];
       const assignment_buttons = [{ text: "View", click: this.viewAssignment }];
       const can_lock_assignment = self.props.current_user.is_admin || self.props.current_user.is_instructor;
+      const course_assignments = this.state.course_assignments;
+      const selected_assignment = this.state.selected_assignment;
       if(self.state.current_course_roles.can_modify_course === true && can_lock_assignment)
       {
          assignment_buttons.push({ text: "Lock/Unlock", click: this.lockAssignment });
@@ -124,6 +165,12 @@ class AssignmentsListView extends Component {
       {
          return(<Redirect to= {"/assignment/" + self.state.selected_assignment} />);
       }
+      
+      const toggleCreate = () => {
+         create = !create;
+         this.getAssignmentsForCourse(this.props.current_user.id);
+      }
+
       return (
          <article className="container">
             <select value={this.state.selected_course} onChange={this.updateSelectedCourse}>
@@ -136,13 +183,96 @@ class AssignmentsListView extends Component {
                   </option>
                )}
             </select>
+            
             <article>
                <h1>Assignments</h1>
+               <table className="table table-striped text-left">
+                  <thead>
+                     <tr>
+                        <th scope="col">
+                           {
+                              ((this.props.current_user.is_instructor ===1)
+                              || (this.props.current_user.is_admin === 1))
+                              && <button
+                              className={(create) ? "btn btn-danger": "btn btn-success"}
+                              onClick={toggleCreate}
+                              id="createNewCourseButton"
+                              >
+                              {(create) ? "X" : "+"}
+                              </button>
+                           }
+                        </th>
+                        <th scope="col">Assignment</th>
+                        <th scope="col">Locked</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+                     {course_assignments.reduce((result,assignment) => {
+                        if(selected_assignment[assignment.id] !== undefined){
+                           result.push(assignment);
+                        }
+                        return result;
+                     }, []).map((value, index) => {
+                        return (
+                           <tr key={value.id}>
+                              <td>
+                                 <button className="btn btn-primary" data-id={value.id} onClick={self.assignmentButtonClick}></button>
+                              </td>
+                           </tr>
+                        );
+                     })}     
+                  {create && <AssignmentTemplate 
+                        handleSubmission={self.addAssignmentAsync}
+                        props={self}
+                        />}
+                  </tbody>
+               </table>
+
                <UserList header={headers} raw_data={this.state.course_assignments} data_cols={assignment_headers} buttons={assignment_buttons} />
             </article>
          </article>
       );
    }
+}
+
+// Assignment template to be filled out by creator
+const AssignmentTemplate = ({handleSubmission, props}) => {
+   const [courseID, setCourseID] = React.useState("");
+   const [assignmentName, setAssignmentName] = React.useState("");
+   const [assignmentDescription, setDescription] = React.useState("");
+   const [isLocked, setIsLocked] = React.useState("0");
+
+   return (
+      <tr>
+         <td>
+            <button
+            id="submitNewAssignmentButton"
+            className="btn btn-primary"
+            onClick={() => handleSubmission({
+               course_id: courseID,
+               name:assignmentName,
+               description: assignmentDescription,
+               is_locked:isLocked
+            }, props)}
+            >Submit</button>
+         </td>
+         <td>
+            <input
+               placeholder="Assignment"
+               onChange={e => setAssignmentName(e.target.value)}
+            ></input>
+         </td>
+         <td>
+            <select
+            onChange={e => setIsLocked(e.target.value)}>
+               <option value="0">0</option>
+               <option value="1">1</option>
+            </select>
+         </td>
+      </tr>
+      
+   )
 }
 
 const AssignmentsList = connect(mapStateToProps)(AssignmentsListView);

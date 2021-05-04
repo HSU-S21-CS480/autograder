@@ -11,6 +11,44 @@ class Assignment {
       this.compile = this.compile.bind(this);
       this.submitAssignment = this.submitAssignment.bind(this);
       this.lockAssignment = this.lockAssignment.bind(this);
+      this.all = this.all.bind(this);
+      this.addAssignmentAsync = this.addAssignmentAsync.bind(this);
+   }
+
+  
+   // Adds new assignment to the database, returns assignment_id of new assignment
+   async addAssignmentAsync(assignment, user_id) {
+      try {
+         // Create new assignment
+         const assignmentPath = this.config.endpoints.assignment.all;
+         const addAssignmentRequest = await WebRequest.makePostAsync(assignmentPath, assignment);
+         const assignmentId = addAssignmentRequest.data.response;
+         return assignmentId;
+      }
+      catch (e) {
+         console.log(e);
+      }
+   }
+
+   // Also unsure what this function does
+   all() {
+      return new Promise((resolve, reject) => {
+         let call = WebRequest.makeUrlRequest;
+         if (this.cache_results === true) {
+            call = WebRequest.makeCacheableUrlRequest;
+         }
+         const path = this.config.endpoints.assignment.all; 
+         const endpoint = this.config.constructRoute(path, []);
+         call(endpoint, (result) => {
+            if (result !== null && result !== undefined && result.data.response !== undefined) {
+               resolve(result.data.response);
+            }
+            else {
+               reject(result);
+            }
+
+         });
+      });
    }
 
    removeFile(file, assignment_id) {
