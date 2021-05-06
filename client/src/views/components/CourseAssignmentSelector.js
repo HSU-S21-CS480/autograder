@@ -20,7 +20,8 @@ class CourseAssignmentSelectorView extends Component {
          courses: [],
          assignments: [],
          selected_course: {},
-         selected_assignment: {}
+         selected_assignment: {},
+         initial_assignment: -1
       };
 
       this.getAssignmentsForCourse = this.getAssignmentsForCourse.bind(this);
@@ -38,12 +39,25 @@ class CourseAssignmentSelectorView extends Component {
             });
          })
          .catch((err) => { });
+
+      this.setState({initial_assignment: this.props.initial_assignment})
    }
 
    getAssignmentsForCourse() {
       this.props.models.course.getActiveAssignmentsForCourse(this.state.selected_course.course_id)
          .then((assignments) => {
-            this.setState({ assignments: assignments, selected_assignment: assignments[0] }, () => {
+            let select = 0;
+
+            if (this.state.initial_assignment > -1) {
+               for (let i=0; i<assignments.length; i++) {
+                  if (parseInt(assignments[i].id) === parseInt(this.state.initial_assignment)) {
+                     select = i;
+                     break;
+                  }
+               }
+            }
+
+            this.setState({ assignments: assignments, selected_assignment: assignments[select] }, () => {
                this.props.onAssignmentChange(this.state.selected_assignment);
             });
          })
@@ -58,7 +72,10 @@ class CourseAssignmentSelectorView extends Component {
    }
 
    updateSelectedAssignment(evt) {
-      this.setState({ selected_assignment: this.state.assignments[evt.target.selectedIndex] }, () => {
+      this.setState({ 
+         selected_assignment: this.state.assignments[evt.target.selectedIndex],
+         initial_assignment: -1
+      }, () => {
          this.props.onAssignmentChange(this.state.selected_assignment);
       });
    }
@@ -73,7 +90,7 @@ class CourseAssignmentSelectorView extends Component {
          <React.Fragment>
                <div className={class_name}>
                   Course:
-                  <select value={this.state.selected_course.course_id} onChange={this.updateSelectedCourse}>
+                  <select onChange={this.updateSelectedCourse}>
                      {this.state.courses.map((value, index) =>
                         <option
                            key={index}
@@ -84,8 +101,10 @@ class CourseAssignmentSelectorView extends Component {
                   </select>
                </div>
                <div className={class_name}>
-                  Assignment:
-                  <select value={this.state.selected_assignment.id} onChange={this.updateSelectedAssignment}>
+                  Assignment: 
+                  <select 
+                     value={(this.props.initial_assignment > -1) ? this.props.initial_assignment : this.state.selected_assignment.id} 
+                     onChange={this.updateSelectedAssignment}>
                      {this.state.assignments.map((value, index) =>
                         <option
                            key={index}

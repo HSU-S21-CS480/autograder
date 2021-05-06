@@ -144,8 +144,12 @@ router.post('/assignment/:assignment_id/user/:user_id/compile', (req, res) => as
 router.get('/assignment/:aid/user/:uid/file', (req, res) => assignmentRoute.assignmentFiles(req, res, db, acl)); 
 
 // Uploads a file. :aid is the assignment ID that this file will belong to;
-// :uid is the ID of the user who has the assignment. 
 router.post('/assignment/:aid/file', (req, res) => assignmentRoute.uploadFile(req, res, db, acl)); 
+
+
+// Stores a URL pointing to student git repository. 
+// :aid is the assignment ID that this file will belong to;
+router.post('/assignment/:aid/repo', (req, res) => assignmentRoute.addRepository(req, res, db, acl)); 
 
 // Deletes a file. The file ID to delete should be in req.body.id.
 router.delete('/assignment/:aid/file', (req, res) => assignmentRoute.deleteFile(req, res, db, acl)); 

@@ -698,3 +698,40 @@ exports.zipGradingFiles = function(req, res, db, acl) {
 
    
 }
+
+
+
+
+/** 
+ * Add a new git repository URL to the database. 
+ * @param {Object} req HTTP request object. 
+ * @param {Object} res HTTP response object. 
+ * @param {Object} db Database connection. 
+ * @param {Object} acl Object containing AccessControlList methods. 
+ * @returns {Object} JSON response with new course's ID if successful, or 
+ *   with error message if unsuccessful for any reason. 
+ */
+ exports.addRepository = function (req, res, db, acl) {
+   let session = req.session;
+   const assignment_id = req.params.aid;
+   const url = req.body.url;
+   
+
+   // is the current user logged in
+   acl.isLoggedIn(session)
+
+      //and this user can access the current assignment
+      .then(() => acl.userHasAssignment(session.user, assignment_id))
+   
+      // if so, add repository
+      .then(() => db.Assignments.Repo.isUnique(session.user.id, assignment_id))
+      .then(() => db.Assignments.Repo.add(session.user.id, assignment_id, url))
+      .then(result => res.json({ response: result }))
+      .catch(err =>
+         res.json({ response: err })
+      );
+}
+
+
+
+

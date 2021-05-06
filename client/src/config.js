@@ -32,7 +32,8 @@ class SharedConfig{
       this.endpoints = {
          root: root_endpoint,
          assignment: {
-            user_files: root_endpoint + "/api/assignment/{:aid}/user/{:uid}/file", 
+            user_files: root_endpoint + "/api/assignment/{:aid}/user/{:uid}/file",
+            repo: root_endpoint + "/api/assignment/{:aid}/repo", 
             file: root_endpoint + "/api/assignment/{:aid}/file", 
             test_cases: root_endpoint + "/api/assignment/{:assignment_id}/testCases",
             test_results: root_endpoint + "/api/assignment/{:assignment_id}/user/{:user_id}/testResults",

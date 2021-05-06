@@ -30,6 +30,12 @@ class WebRequest {
       });
    }
 
+   static async makeRequestAsync(url) {
+      const result = await axios(url, { withCredentials: true });
+      return result;
+   }
+   
+
    static makePost(url, post, callback) {
       axios(url, {
          method: "post",

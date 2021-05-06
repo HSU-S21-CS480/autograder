@@ -198,6 +198,33 @@ class CoursesDb {
 
 
    /**
+    * Returns true if the given user is permitted to modify this course.
+    * @param {Number} course_id The course's ID number (integer).
+    * @param {Number} user_id The given user's ID number (integer).
+    * @returns {Promise} Resolves with true if the user can upload assignments to this course;
+    *    rejects otherwise.
+    */
+    canSubmitAssignment(course_id, user_id) {
+      return new Promise((resolve, reject) => {
+         const sql = "SELECT * FROM course_users "
+            + "WHERE course_id = $course_id AND user_id = $user_id AND course_role & 2 > 0";
+         const params = { $course_id: course_id, $user_id: user_id }
+         this.db.get(sql, params, (err, row) => {
+            if (err === null && row !== undefined) {
+               resolve(true);
+            }
+            else if (err !== null) {
+               console.log(err);
+               reject(err);
+            }
+            else {
+               reject(false);
+            }
+         });
+      });
+   }
+
+   /**
     * Returns true if the given user is the creator of this course.
     * @param {Number} course_id The course's ID number (integer).
     * @param {Number} user_id The given user's ID number (integer).

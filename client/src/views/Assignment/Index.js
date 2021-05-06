@@ -12,7 +12,8 @@ import TestCases from './components/TestCasesComponent';
 import ManageTests from './components/ManageTestsComponent';
 import Results from './components/ResultsComponent';
 import BulkResults from './components/BulkResultsComponent'
-import Description from './components/DescriptionComponent'; 
+import Description from './components/DescriptionComponent';
+import GithubRepoLink from './components/GithubRepoLinkComponent';
 
 const mapStateToProps = state => {
    return { current_user: state.current_user, models: state.models };
@@ -89,6 +90,8 @@ class IndexView extends Component {
          this.getCourseUsers();
       });
    }
+
+   
 
    getCourseUsers() {
       let self = this;
@@ -242,17 +245,23 @@ class IndexView extends Component {
       const links = this.state.links;
       const state = this.state;
       const self = this;
+      const current_path = this.props.location.pathname; 
+      
+      let initial_assignment;
+      
+      if (current_path.search(/\d/) > 0) {
+         initial_assignment = current_path.substring(current_path.search(/\d/));
+         console.log(initial_assignment);
 
-      //always start out at the file upload component
-      if (this.props.location.pathname.toLowerCase() === '/assignment/' || this.props.location.pathname.toLowerCase() === '/assignment') {
-         return (<Redirect to="/assignment/add-files" />)
       }
+
+      
       return (
          <div>
+            <Redirect to="/assignment/add-files" />
             <article className="row">
-
                <CourseAssignmentSelector
-                  onAssignmentChange={this.onAssignmentChange} class_name="col-md-3" />
+                  onAssignmentChange={this.onAssignmentChange} initial_assignment={initial_assignment} class_name="col-md-3" />
                <div className="col-md-3">
                   {this.renderStudentSelector()}
                </div>
@@ -303,12 +312,8 @@ class IndexView extends Component {
                         if (self.selectedUser().id === self.props.current_user.id) {
                            return (
                               <div className="container">
-                                 <AddFiles
-                                    assignment={this.state.current_assignment}
-                                    file_add_callback={this.updateFiles}
-                                    file_remove_callback={this.removeTab}
-                                    files={this.state.files}
-                                 />
+                              
+                                 <GithubRepoLink assignment_id={this.state.current_assignment.id} props={self.props}/>
                               </div>
                            )
                         }

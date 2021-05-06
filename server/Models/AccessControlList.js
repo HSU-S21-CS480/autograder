@@ -48,6 +48,28 @@ class AccessControlList {
    }
 
 
+
+   /**
+    * Resolves with true if user can modify the given course.
+    * @param {Object} user
+    * @param {Number} course_id The course's ID number (integer).
+    * @returns {Promise} Promise object represents the result of calling canModify().
+    */
+    canSubmitAssignment(user, course_id) {
+      return new Promise((resolve, reject) => {
+         this.db.Courses.canSubmitAssignment(course_id, user.id)
+         .then(result => resolve(result))
+         .catch(err => reject(err));
+      });
+   }
+
+
+   /**
+    * Resolves with true if user can modify the given course.
+    * @param {Number} course_id The course's ID number (integer).
+    * @param {Number} user_id The user's ID number (integer).
+    * @returns {Promise} Promise object represents the result of calling isCreator().
+    */
    async isCreator(course_id, user_id) {
       try {
          const result = await this.db.Courses.isCreator(course_id, user_id);

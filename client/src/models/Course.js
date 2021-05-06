@@ -24,7 +24,7 @@ class Course {
 
 
    // Adds new course to the database, returns course_id of new course
-   async addCourseAsync(course, user_id) {
+   async addCourseAsync(course) {
       try {
          // Create new course
          const coursePath = this.config.endpoints.course.all;

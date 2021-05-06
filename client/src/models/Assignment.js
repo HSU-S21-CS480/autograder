@@ -11,6 +11,7 @@ class Assignment {
       this.compile = this.compile.bind(this);
       this.submitAssignment = this.submitAssignment.bind(this);
       this.lockAssignment = this.lockAssignment.bind(this);
+      this.linkRepository = this.linkRepository.bind(this);
    }
 
    removeFile(file, assignment_id) {
@@ -262,6 +263,20 @@ class Assignment {
             }
          });
       });
+   }
+
+
+   async linkRepository(assignment_id, url) {
+      try {
+         const path = this.config.endpoints.assignment.repo;
+         const endpoint = this.config.constructRoute(path, [assignment_id])
+         const result = await WebRequest.makePostAsync(endpoint, {url: url});
+         return result.data.response;
+      } 
+      catch (e) {
+         console.log(e);
+      }
+      
    }
 
    lockAssignment(assignment_id) {
