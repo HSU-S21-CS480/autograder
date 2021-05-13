@@ -71,7 +71,7 @@ class HeaderView extends Component {
                         </div>
                      </li>
                      <li className="nav-item">
-                        <Link to="/user" className="nav-link">User</Link>
+                        <Link to="/admin" className="nav-link">Admin</Link>
                      </li>
                   </ul>
                </div>

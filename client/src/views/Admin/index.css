@@ -1,0 +1,16 @@
+.userlist {
+    border: thin solid black;
+    padding: 2rem;
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.userlistname {
+  position: relative;
+  top: -40px;
+  background: white;
+  padding: 2px;
+  width: 80px;
+  color: black;
+}
