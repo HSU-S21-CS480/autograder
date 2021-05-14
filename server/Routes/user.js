@@ -226,7 +226,7 @@ validateUser = function(user, db) {
  * return new Promise((resolve, reject) => {
  * axios({
          method: 'GET', 
-         url: 'https://localhost:8080/users', 
+         url: 'http://localhost:8080/api/users', 
          data: {
             users: 'users'
          }
@@ -238,7 +238,7 @@ validateUser = function(user, db) {
     * @param {Object} req HTTP request object.
     * @param {Object} res HTTP response object.
     */
-getAllUsers = function(user, req, res) {
+exports.getAllUsers = function(user, req, res) {
    isAdmin(user.session.id) //admin check, protects endpoint from malicious actor
       .then(result => {
          req.body.user = result;
