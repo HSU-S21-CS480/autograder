@@ -1,15 +1,30 @@
 import React, { Component, useState, useEffect } from 'react';
 import {Link, RouteComponentProps } from 'react-router-dom';
 import './index.css';
+const axios = require('axios'); 
 
+class ViewUsers extends Component {
 
+    constructor(props) {
+        super(props)
 
-function ViewUser() {
+        this.state = {
+            users: []
+        }
+    }
 
-    const [users, setUsers] = useState([])
+    componentDidMount() { //broken here -- returns 404 on console
+        //not sure how to fix this 
+        axios
+          .get(`/users`)
+          .then(res => this.setState({ users: res.data }))
+          .catch(err => console.log(err))
+      }
 
+    render() {
         return ( 
-            <div className="container">
+            <div className="userlist">
+                <span className="userlistname">Users</span>
                 <table>
                     <thead>
                     <tr>
@@ -18,32 +33,16 @@ function ViewUser() {
                     </tr>
                     </thead>
                     <tbody>
-                    {users && users.map(users =>
+                    {this.state.users.map(users =>
                      <tr key={this.users.id}>
                          <td>{this.users.name} </td>
                      </tr>
                     )}
                     </tbody>
                 </table>
-            </div> 
-            
+            </div>  
         );
-}
-
-class ViewUsers extends Component {
-
-    render() {
-        return(
-        <section>
-            <div className="userlist">
-                <span className="userlistname">Users</span>
-                <ViewUser/>
-            </div>
-        </section>
-        )
     }
-
-
 }
 
 export { ViewUsers };

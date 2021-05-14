@@ -209,7 +209,7 @@ validateUser = function(user, db) {
     * information, or an error 
     */
  adminImpersonatesUser = function(user, db, req, res) {
-   isAdmin(user.id) //checks if user is admin
+   isAdmin(user.session.id) //checks if user is admin
       .then(db.User.authenticate(req.body.email, req.body.password)) //authenticates admin as user
       .then(result => { //logs in new user
          delete result.password;
@@ -218,5 +218,33 @@ validateUser = function(user, db) {
       }) 
       .catch(err => {
          res.json({ response: err });
+      });
+
+}
+
+/**
+ * return new Promise((resolve, reject) => {
+ * axios({
+         method: 'GET', 
+         url: 'https://localhost:8080/users', 
+         data: {
+            users: 'users'
+         }
+      })
+ */
+/**
+    * Check if the admin is in a database and can impersonate a user
+    * @param {Object} user  JSON object of the user.
+    * @param {Object} req HTTP request object.
+    * @param {Object} res HTTP response object.
+    */
+getAllUsers = function(user, req, res) {
+   isAdmin(user.session.id) //admin check, protects endpoint from malicious actor
+      .then(result => {
+         req.body.user = result;
+         resolve(response.data); 
+      })
+      .catch(err => {
+         res.json({ response: err }); 
       });
 }

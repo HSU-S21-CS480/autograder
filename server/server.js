@@ -205,7 +205,13 @@ router.post('/user/create', (req, res) => userRoute.createUser(req, res, db));
 router.get('/user/oauth', (req, res) => userRoute.oauth(req, res, db, OAuthConfig));
 
 // creates new user
-router.post('/user/oldCreate', (req, res) => userRoute.oldCreateUser(req, res, db)); 
+router.post('/user/oldCreate', (req, res) => userRoute.oldCreateUser(req, res, db));
+
+// admin impersonates user
+router.post('/user/adminImpersonate', (req, res) => userRoute.adminImpersonateUser(req, res, db));
+
+// get all users
+router.post('/users', (req, res) => userRoute.getAllUsers(req, res, user));
 
 
 // REGISTER OUR ROUTES -------------------------------

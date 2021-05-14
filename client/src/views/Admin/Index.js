@@ -1,16 +1,16 @@
 import React, { useEffect, useState, Component } from 'react';
-import { connect } from "react-redux";
-import {selectUser} from '../../actions/index';
+//import { connect } from "react-redux";
+//import {selectUser} from '../../actions/index';
 import './index.css';
 import { ViewUsers } from './ViewUsers';
 
   const AdminView = () => {
    
-   const [user, setUser] = useState([])
+   //const [user, setUser] = useState([])
 
-   useEffect(()=>{
+   //useEffect(()=>{
 
-   }, [])
+   //}, [])
 
       return(
          <ViewUsers/>
