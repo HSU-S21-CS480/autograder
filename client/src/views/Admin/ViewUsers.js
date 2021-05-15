@@ -1,10 +1,8 @@
 import React, { Component, useState, useEffect } from 'react';
-import {Link, RouteComponentProps } from 'react-router-dom';
+//import {Link, RouteComponentProps } from 'react-router-dom';
 import './index.css';
-const axios = require('axios'); 
 
 class ViewUsers extends Component {
-
 
     constructor(props) {
         super(props)
@@ -14,12 +12,9 @@ class ViewUsers extends Component {
         }
     }
 
-    componentDidMount() { //broken here -- returns 404 on console
-        //not sure how to fix this 
-        axios
-          .get(`/users`)
-          .then(res => this.setState({ users: res.data }))
-          .catch(err => console.log(err))
+    componentDidMount() { //broken here -- returns 500 on console
+        return fetch('http://localhost:8080/api/user')
+            .then(data => data.json())
       }
 
     render() {
@@ -41,7 +36,7 @@ class ViewUsers extends Component {
                     )}
                     </tbody>
                 </table>
-            </div>  
+            </div> 
         );
     }
 }

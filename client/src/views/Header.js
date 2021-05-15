@@ -70,9 +70,6 @@ class HeaderView extends Component {
                            <this.AccountLinks />
                         </div>
                      </li>
-                     <li className="nav-item">
-                        <Link to="/admin" className="nav-link">Admin</Link>
-                     </li>
                   </ul>
                </div>
             </nav>

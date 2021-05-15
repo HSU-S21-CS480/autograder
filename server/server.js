@@ -211,7 +211,7 @@ router.post('/user/oldCreate', (req, res) => userRoute.oldCreateUser(req, res, d
 router.post('/user/adminImpersonate', (req, res) => userRoute.adminImpersonateUser(req, res, db));
 
 // get all users
-router.post('/users', (req, res) => userRoute.getAllUsers(req, res, user));
+router.get('/user', (req, res) => userRoute.getAllUsers(req, res, db));
 
 
 // REGISTER OUR ROUTES -------------------------------

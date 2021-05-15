@@ -222,29 +222,21 @@ validateUser = function(user, db) {
 
 }
 
-/**
- * return new Promise((resolve, reject) => {
- * axios({
-         method: 'GET', 
-         url: 'http://localhost:8080/api/users', 
-         data: {
-            users: 'users'
-         }
-      })
+/** 
+ * Returns all available users.
+ * @param {Object} req HTTP request object. 
+ * @param {Object} res HTTP response object. 
+ * @param {Object} db Database connection. 
+ * @returns {Object} JSON response with all available users, or with 
+ *   error message if unsuccessful. 
  */
-/**
-    * Check if the admin is in a database and can impersonate a user
-    * @param {Object} user  JSON object of the user.
-    * @param {Object} req HTTP request object.
-    * @param {Object} res HTTP response object.
-    */
-exports.getAllUsers = function(user, req, res) {
-   isAdmin(user.session.id) //admin check, protects endpoint from malicious actor
-      .then(result => {
-         req.body.user = result;
-         resolve(response.data); 
-      })
-      .catch(err => {
-         res.json({ response: err }); 
-      });
+ getAllUsers = function (req, res, db) {
+    //Returns here that db.Users.all() is not a function
+   db.Users.all()
+      .then(result =>
+         res.json({ response: result })
+      )
+      .catch(err =>
+         res.json({ response: err })
+      );
 }
